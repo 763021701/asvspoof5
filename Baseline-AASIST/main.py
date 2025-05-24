@@ -19,7 +19,7 @@ from typing import Dict, List, Union
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
-from torch.utils.tensorboard import SummaryWriter
+from tensorboardX import SummaryWriter
 from torchcontrib.optim import SWA
 
 from data_utils import (TrainDataset,TestDataset, genSpoof_list)
@@ -52,7 +52,7 @@ def main(args: argparse.Namespace) -> None:
     output_dir = Path(args.output_dir)
     database_path = Path(config["database_path"])
     dev_trial_path = (database_path /
-                      "ASVspoof5.dev.metainfor.txt")
+                      "ASVspoof5_protocols/ASVspoof5.dev.track_1.tsv")
     # define model related paths
     model_tag = "{}_ep{}_bs{}".format(
         os.path.splitext(os.path.basename(args.config))[0],
@@ -178,9 +178,9 @@ def get_loader(
     dev_database_path = database_path / "flac_D/"
 
     trn_list_path = (database_path /
-                     "ASVspoof5.train.metainfor.txt")
+                     "ASVspoof5_protocols/ASVspoof5.train.tsv")
     dev_trial_path = (database_path /
-                      "ASVspoof5.dev.metainfor.txt")
+                      "ASVspoof5_protocols/ASVspoof5.dev.track_1.tsv")
 
     d_label_trn, file_train = genSpoof_list(dir_meta=trn_list_path,
                                             is_train=True,
@@ -239,7 +239,7 @@ def produce_evaluation_file(
     #assert len(trial_lines) == len(fname_list) == len(score_list)
     with open(save_path, "w") as fh:
         for fn, sco, trl in zip(fname_list, score_list, trial_lines):
-            spk_id, utt_id, _, _, src, key = trl.strip().split(' ')
+            spk_id, utt_id, _, _, _, _, _, src, key, _ = trl.strip().split(' ')
             assert fn == utt_id
             fh.write("{} {} {} {}\n".format(spk_id, utt_id, sco, key))
     print("Scores saved to {}".format(save_path))

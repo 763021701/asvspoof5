@@ -108,7 +108,8 @@ def train_epoch(
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='ASVspoof5 RawNet2-baseline system')
     # Dataset
-    parser.add_argument('--database_path', type=str, default='/your/path/to/data/ASVspoof5_database/', help='Change this to user\'s full directory address of ASVspoof5 database.')
+    parser.add_argument('--database_path', type=str, default='/home/ubuntu/workspace/datasets/ASVspoof/ASVspoof5/',
+                        help='Change this to user\'s full directory address of ASVspoof5 database.')
     
     # Hyperparameters
     parser.add_argument('--batch_size', type=int, default=128)
@@ -183,7 +184,7 @@ if __name__ == '__main__':
 
     #evaluation 
     if args.eval:
-        file_eval = genSpoof_list( dir_meta = os.path.join(args.database_path+'ASVspoof5.eval.txt'),is_train=False,is_eval=True)
+        file_eval = genSpoof_list( dir_meta = os.path.join(args.database_path+'ASVspoof5_protocols/ASVspoof5.eval.track_1.tsv'),is_train=False,is_eval=True)
         print('no. of eval trials',len(file_eval))
         eval_set= Dataset_eval(list_IDs = file_eval, base_dir = args.database_path)
         produce_evaluation_file(eval_set, model, device, args.eval_output)
@@ -192,7 +193,7 @@ if __name__ == '__main__':
      
     # define train dataloader
 
-    d_label_trn,file_train = genSpoof_list(dir_meta = os.path.join(args.database_path+'ASVspoof5.train.metadata.txt'),is_train=True,is_eval=False)
+    d_label_trn,file_train = genSpoof_list(dir_meta = os.path.join(args.database_path+'ASVspoof5_protocols/ASVspoof5.train.tsv'),is_train=True,is_eval=False)
     print('no. of training trials',len(file_train))
     
     train_set = Dataset_train(list_IDs = file_train,
@@ -205,7 +206,7 @@ if __name__ == '__main__':
 
     # define validation dataloader
 
-    d_label_dev,file_dev = genSpoof_list( dir_meta = os.path.join(args.database_path+'ASVspoof5.dev.metadata.txt'),is_train=False,is_eval=False)
+    d_label_dev,file_dev = genSpoof_list( dir_meta = os.path.join(args.database_path+'ASVspoof5_protocols/ASVspoof5.dev.track_1.tsv'),is_train=False,is_eval=False)
     print('no. of validation trials',len(file_dev))
 
     dev_set = Dataset_dev(list_IDs = file_dev,
